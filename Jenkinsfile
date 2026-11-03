@@ -1,21 +1,36 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs 'node-24'
+    }
+
     stages {
-        stage('Run script') {
+        stage('Check environment') {
             steps {
-                sh 'sh hello.sh'
+                sh 'node --version'
+                sh 'npm --version'
+            }
+        }
+
+        stage('Run unit tests') {
+            steps {
+                sh 'node --test calculator.test.js'
             }
         }
     }
 
     post {
+        always {
+            echo 'Test execution finished. See console output.'
+        }
+
         success {
-            echo 'The repository script ran successfully!'
+            echo 'All tests passed!'
         }
 
         failure {
-            echo 'Something failed. Check the console output.'
+            echo 'Build failed. Check the failing step.'
         }
     }
 }

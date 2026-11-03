@@ -9,20 +9,29 @@ pipeline {
         stage('Check environment') {
             steps {
                 sh 'node --version'
-                sh 'npm --version'
             }
         }
 
         stage('Run unit tests') {
             steps {
-                sh 'node --test calculator.test.js'
+                sh '''
+                    mkdir -p reports
+                    rm -f reports/results.xml
+
+                    node --test \
+                        --test-reporter=spec \
+                        --test-reporter=junit \
+                        --test-reporter-destination=stdout \
+                        --test-reporter-destination=reports/results.xml \
+                        calculator.test.js
+                '''
             }
         }
     }
 
     post {
         always {
-            echo 'Test execution finished. See console output.'
+            junit 'reports/results.xml'
         }
 
         success {
@@ -30,7 +39,7 @@ pipeline {
         }
 
         failure {
-            echo 'Build failed. Check the failing step.'
+            echo 'Build failed. Check the logs and test results.'
         }
     }
 }

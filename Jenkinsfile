@@ -10,41 +10,49 @@ pipeline {
     }
 
     stages {
-        stage('Check environment') {
+        stage('Install dependencies') {
             steps {
-                sh 'node --version'
+                sh 'rm -rf reports test-results'
+                sh 'npm ci'
+                sh 'npx playwright install chromium'
             }
         }
 
-        stage('Run unit tests') {
+        stage('Unit tests') {
             steps {
                 sh '''
                     mkdir -p reports
-                    rm -f reports/results.xml
-
                     node --test \
                         --test-reporter=spec \
                         --test-reporter=junit \
                         --test-reporter-destination=stdout \
-                        --test-reporter-destination=reports/results.xml \
+                        --test-reporter-destination=reports/unit.xml \
                         calculator.test.js
                 '''
+            }
+        }
+
+        stage('Browser tests') {
+            steps {
+                sh 'npx playwright test'
             }
         }
     }
 
     post {
         always {
-            archiveArtifacts artifacts: 'reports/results.xml'
-            junit 'reports/results.xml'
+            archiveArtifacts artifacts: 'reports/*.xml,test-results/**/*',
+                             allowEmptyArchive: true
+
+            junit 'reports/*.xml'
         }
 
         success {
-            echo 'All tests passed!'
+            echo 'Unit tests and browser tests passed!'
         }
 
         failure {
-            echo 'Build failed. Check the logs and test results.'
+            echo 'Build failed. Check results and artifacts.'
         }
     }
 }

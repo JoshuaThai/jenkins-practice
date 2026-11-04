@@ -13,6 +13,7 @@ const html = `
         Say hello
     </button>
     <p id="message"></p>
+    <p id="great-day">What a great day!</p>
 </body>
 </html>
 `;

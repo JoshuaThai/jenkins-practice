@@ -11,3 +11,7 @@ test('the button displays a greeting', async ({ page }) => {
 
     await expect(page.locator('#message')).toHaveText('Hello, tester!');
 });
+
+test('the button tells the user about a great day', async({page}) =>{
+    await expect(page.locator('#great-day')).toHaveText('What a great day!');
+})

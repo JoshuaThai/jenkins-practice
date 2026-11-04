@@ -9,7 +9,7 @@ const html = `
 </head>
 <body>
     <h1>Jenkins Practice</h1>
-    <button onclick="document.querySelector('#message').textContent = 'Hello, tester!'">
+    <button onclick="document.querySelector('#message').textContent = 'Hello, josh!'">
         Say hello
     </button>
     <p id="message"></p>

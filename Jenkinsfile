@@ -35,6 +35,7 @@ pipeline {
 
     post {
         always {
+            archiveArtifacts artifacts: 'reports/results.xml'
             junit 'reports/results.xml'
         }
 

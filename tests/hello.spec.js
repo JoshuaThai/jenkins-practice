@@ -13,5 +13,6 @@ test('the button displays a greeting', async ({ page }) => {
 });
 
 test('the button tells the user about a great day', async({page}) =>{
+    await page.goto('/');
     await expect(page.locator('#great-day')).toHaveText('What a great day!');
 })
